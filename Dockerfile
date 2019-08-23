@@ -124,9 +124,7 @@ RUN \
         nasm \
         yasm \
         wget \
-        zlib1g-dev
-
-RUN \
+        zlib1g-dev && \
 	echo "**** compile libx264 ****" && \
 	DIR=/tmp/x264 && \
 	git clone http://git.videolan.org/git/x264.git -b stable ${DIR} && \
@@ -136,9 +134,7 @@ RUN \
 		--disable-opencl \
 		--enable-pic && \
 	make VERBOSE=1 && \
-	make install VERBOSE=1
-
-RUN \
+	make install VERBOSE=1 && \
 	echo "**** compile libx265 ****" && \
 	DIR=/tmp/x265 && \
 	hg clone https://bitbucket.org/multicoreware/x265 ${DIR} && \
@@ -147,9 +143,7 @@ RUN \
 		-DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 		-DENABLE_SHARED:bool=off ../../source && \
 	make VERBOSE=1 && \
-	make install VERBOSE=1
-
-RUN \
+	make install VERBOSE=1 && \
 	echo "**** compile libfdk-aac ****" && \
 	wget -O /tmp/fdk-aac.tar.gz https://github.com/mstorsjo/fdk-aac/tarball/master && \
 	cd /tmp && \
@@ -158,9 +152,7 @@ RUN \
 	autoreconf -fiv && \
 	./configure --prefix="${PREFIX}" --disable-shared && \
 	make VERBOSE=1 && \
-	make install
-
-RUN \
+	make install && \
 	echo "**** compile libvpx ****" && \
 	DIR=/tmp/libvpx && \
 	git clone https://github.com/webmproject/libvpx/ ${DIR} && \
@@ -171,18 +163,14 @@ RUN \
 		--enable-onthefly-bitpacking --enable-realtime-only \
 		--cpu=native --as=yasm && \
 	make && \
-	make install
-
-RUN \
+	make install && \
 	echo "**** compile libvorbis ****" && \
 	wget -c -v http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.6.tar.xz -P /tmp/ && \
 	cd /tmp && tar -xvf libvorbis-1.3.6.tar.xz && \
 	cd libvorbis-1.3.6 && \
 	./configure  --prefix="${PREFIX}" --with-ogg="${PREFIX}" --enable-static && \
 	make && \
-	make install
-
-RUN \
+	make install && \
 	echo "**** compile ffmpeg ****" && \
 	git clone https://github.com/FFmpeg/FFmpeg -b master /tmp/ffmpeg && \
 	cd /tmp/ffmpeg && \
@@ -211,9 +199,7 @@ RUN \
 	hash -r && \
     cd tools && \
     make qt-faststart && \
-	cp qt-faststart ${PREFIX}/bin
-
-RUN \
+	cp qt-faststart ${PREFIX}/bin && \
 	echo "**** cleanup ****" && \
 	ldd ${PREFIX}/bin/ffmpeg | grep opt/ffmpeg | cut -d ' ' -f 3 | xargs -i cp {} /usr/local/lib/ && \
 	cp ${PREFIX}/bin/* /usr/local/bin/ && \
@@ -254,9 +240,7 @@ RUN \
 		jq \
 		libtool \
 		pkg-config \
-		wget
-
-RUN \
+		wget && \
 	echo "**** compile libiconv ****" && \
 	wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.15.tar.gz -P /tmp/ && \
 	cd /tmp && \
@@ -266,9 +250,7 @@ RUN \
 	make VERBOSE=1 && \
 	make DESTDIR=/tmp/libiconv-build install && \
 	echo "**** copy to /usr for dependency ****" && \
-	cp -pr /tmp/libiconv-build/usr/* /usr/
-
-RUN \
+	cp -pr /tmp/libiconv-build/usr/* /usr/ && \
 	echo "**** compile tvheadend ****" && \
 	apt-get install -yq --no-install-recommends \
 		bzip2 \
@@ -338,9 +320,7 @@ RUN \
 		--prefix=/usr \
 		--sysconfdir=/config && \
 	make && \
-	make DESTDIR=/tmp/tvheadend-build install
-
-RUN \
+	make DESTDIR=/tmp/tvheadend-build install && \
 	echo "***** compile comskip ****" && \
 	apt-get install -yq --no-install-recommends \
 		libargtable2-dev && \
@@ -379,6 +359,8 @@ RUN \
 		libx11-6 \
 		libxext6 \
 		libxfixes3 \
+		mesa-va-drivers \
+		mesa-vdpau-drivers \
 		python \
 		wget \
 		xmltv-util && \
@@ -401,7 +383,6 @@ VOLUME /config /recordings
 
 ############## release tvheadend ##############
 FROM release-tvhbase
-MAINTAINER wiserain
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
