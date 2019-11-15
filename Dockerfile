@@ -188,7 +188,6 @@ RUN \
 		--disable-debug \
 		--enable-gpl \
 		--cpu=native \
-		--enable-opengl \
 		--enable-libfdk-aac \
 		--enable-libx264 \
 		--enable-libx265 \
