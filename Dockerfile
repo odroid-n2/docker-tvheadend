@@ -402,7 +402,6 @@ COPY root_epgkr/ /
 RUN \
 	echo "**** set permissions for scripts /usr/bin ****" && \
 	chmod 555 /usr/bin/tv_grab_* && \
-	chmod a+x /usr/bin/epg4plex && \
 	echo "**** remove irrelevant grabbers ****" && \
 	xargs rm -f < /tmp/tv_grab_irr.list && \
 	echo "install dependencies for epg2xml" && \
