@@ -241,10 +241,10 @@ RUN \
 		pkg-config \
 		wget && \
 	echo "**** compile libiconv ****" && \
-	wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.15.tar.gz -P /tmp/ && \
+	wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz -P /tmp/ && \
 	cd /tmp && \
-	tar -xzf libiconv-1.15.tar.gz && \
-	cd libiconv-1.15 && \
+	tar -xzf libiconv-1.16.tar.gz && \
+	cd libiconv-1.16 && \
 	./configure && \
 	make VERBOSE=1 && \
 	make DESTDIR=/tmp/libiconv-build install && \
@@ -387,14 +387,8 @@ ARG DEBIAN_FRONTEND="noninteractive"
 
 # default variables
 ENV UPDATE_EPG2XML="1"
-ENV EPG2XML_VER="latest"
-ENV EPG2XML_FROM="wiserain"
 ENV UPDATE_CHANNEL="1"
-ENV CHANNEL_FROM="wonipapa"
-ENV EPG_PORT="9983"
 ENV TZ="Asia/Seoul"
-ENV TVH_DVB_SCANF_PATH="/usr/share/tvheadend/data/dvb-scan/"
-ENV TVH_UI_LEVEL="2"
 
 # copy local files
 COPY root_epgkr/ /
@@ -409,25 +403,17 @@ RUN \
 	apt-get update -yq && \
 	apt-get install -yq \
 		git \
-		php \
-		php-curl \
-		php-dom \
-		php-mbstring \
-		jq && \
-	echo "**** install antennas ****" && \
-	apt-get install -yq \
-		gnupg2 && \
-	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-	apt-get update -yq && \
-	apt-get install -yq yarn && \
-	git clone https://github.com/TheJF/antennas.git /antennas && \
-	cd /antennas && yarn install && \
+		jq \
+		python3 \
+		python3-bs4 \
+		python3-lxml \
+		python3-requests \
+		xml-twig-tools && \
 	echo "**** cleanup ****" && \
 	rm -rf /var/cache/apk/* && \
 		rm -rf /tmp/*
 
 # ports and volumes
 EXPOSE 9981 9982 9983
-VOLUME /config /recordings /epg2xml
+VOLUME /config /epg2xml
 WORKDIR /epg2xml
